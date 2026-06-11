@@ -1,0 +1,27 @@
+[build]
+  # Your frontend HTML lives in /public — put mtg-proxy-shop.html here as index.html
+  publish = "public"
+  # Functions are in /netlify/functions
+  functions = "netlify/functions"
+
+[functions]
+  # Bundle each function individually so AWS SDK tree-shaking works
+  node_bundler = "esbuild"
+
+# Redirect all /api/* calls to the Netlify Functions namespace
+# (optional — functions are already accessible at /.netlify/functions/*)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Cache static assets aggressively
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

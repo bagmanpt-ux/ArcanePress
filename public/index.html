@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArcanePress – MTG Proxy Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<!-- PayPal JS SDK – replace YOUR_PAYPAL_CLIENT_ID with your live/sandbox client ID -->
+<script src="https://www.paypal.com/sdk/js?client-id=Ab7de-772fKseVGRrachmxOy3MYinOfp7WxO5Z5DPdD1Qe0pMILFiqhNMnM_vO3rsvZR-zDaZYPpqXQY&currency=GBP&intent=capture" data-sdk-integration-source="button-factory"></script>
+<style>
+  :root {
+    --obsidian: #0A0A0F;
+    --void: #06060A;
+    --arcane: #6B21A8;
+    --arcane-light: #9333EA;
+    --arcane-dim: #3B0764;
+    --gold: #C9A84C;
+    --gold-light: #E4C570;
+    --gold-dim: #7A5E1A;
+    --parchment: #1A1525;
+    --surface: #120F1A;
+    --surface2: #1E1830;
+    --text: #E8E0F0;
+    --text-muted: #9B8FB0;
+    --text-dim: #5C5275;
+    --border: rgba(201,168,76,0.18);
+    --border-hover: rgba(201,168,76,0.4);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--obsidian);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,6,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.25rem;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .nav-logo span { color: var(--text); font-weight: 400; }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase; transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+  .nav-cart {
+    background: var(--arcane); color: white; border: none;
+    padding: 8px 20px; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500;
+    transition: background 0.2s; white-space: nowrap;
+  }
+  .nav-cart:hover { background: var(--arcane-light); }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(180deg, #0D0A18 0%, var(--obsidian) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(107,33,168,0.25) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700; line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--gold); }
+  .hero p {
+    color: var(--text-muted); font-size: 1.05rem; max-width: 560px;
+    margin: 0 auto 2.5rem;
+  }
+  .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--arcane); color: white; border: none;
+    padding: 12px 28px; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+    transition: background 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--arcane-light); }
+  .btn-outline {
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold-dim); padding: 12px 28px;
+    border-radius: var(--radius); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+    transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  /* ===== TABS ===== */
+  .tabs-container {
+    max-width: 1400px; margin: 0 auto; padding: 0 2rem;
+  }
+  .tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+    margin: 2.5rem 0 0; overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 1rem 2rem; color: var(--text-muted); background: none;
+    border: none; cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.2s; white-space: nowrap; margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-panel { display: none; padding: 2rem 0 4rem; }
+  .tab-panel.active { display: block; }
+
+  /* ===== SEARCH BAR ===== */
+  .search-row {
+    display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: center;
+  }
+  .search-input {
+    flex: 1; min-width: 220px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.95rem;
+    padding: 10px 16px; outline: none; transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--arcane-light); }
+  .search-input::placeholder { color: var(--text-dim); }
+  select.search-input { cursor: pointer; }
+  .search-btn {
+    background: var(--arcane); color: white; border: none;
+    padding: 10px 24px; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+    transition: background 0.2s; white-space: nowrap;
+  }
+  .search-btn:hover { background: var(--arcane-light); }
+
+  /* ===== CARD GRID ===== */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1.5rem;
+  }
+  .card-item {
+    position: relative; cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    border-radius: 4.75% / 3.5%;
+  }
+  .card-item:hover {
+    transform: translateY(-8px) scale(1.035);
+    z-index: 10;
+  }
+  .card-item img {
+    width: 100%; border-radius: 4.75% / 3.5%;
+    display: block;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    transition: box-shadow 0.22s ease;
+  }
+  .card-item:hover img {
+    box-shadow: 0 12px 36px rgba(107,33,168,0.45), 0 0 0 1.5px var(--gold);
+  }
+  .card-item .add-btn {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    background: rgba(107,33,168,0.92); color: white; border: none;
+    padding: 5px 18px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; opacity: 0; transition: opacity 0.18s;
+    white-space: nowrap; font-family: 'Inter', sans-serif;
+    backdrop-filter: blur(6px);
+  }
+  .card-item:hover .add-btn { opacity: 1; }
+  .card-placeholder {
+    width: 100%; aspect-ratio: 63/88; border-radius: 4.75% / 3.5%;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim); font-size: 0.75rem;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0%,100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .load-more-row { text-align: center; margin-top: 2.5rem; }
+
+  /* ===== HOVER TOOLTIP ===== */
+  #card-tooltip {
+    position: fixed; z-index: 9999;
+    background: var(--surface);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+    max-width: 320px; width: 320px;
+    pointer-events: none;
+    opacity: 0; transition: opacity 0.15s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.12);
+  }
+  #card-tooltip.visible { opacity: 1; }
+  .tt-name {
+    font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
+    color: var(--gold); margin-bottom: 0.25rem;
+  }
+  .tt-cost {
+    font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;
+  }
+  .tt-type {
+    font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); padding: 0.4rem 0; margin: 0.5rem 0;
+  }
+  .tt-oracle {
+    font-size: 0.82rem; color: var(--text); line-height: 1.5; white-space: pre-wrap;
+  }
+  .tt-flavor {
+    font-size: 0.78rem; color: var(--text-dim); font-style: italic;
+    margin-top: 0.5rem; line-height: 1.45;
+  }
+  .tt-pt {
+    font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold);
+    text-align: right; margin-top: 0.5rem; font-weight: 600;
+  }
+  .tt-set {
+    font-size: 0.73rem; color: var(--text-dim); margin-top: 0.75rem;
+    border-top: 1px solid var(--border); padding-top: 0.5rem;
+  }
+
+  /* ===== ART PICKER MODAL ===== */
+  #art-modal {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.78); align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  #art-modal.open { display: flex; }
+  .art-modal-inner {
+    background: var(--surface);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-xl);
+    max-width: 740px; width: 95%; max-height: 85vh;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .art-modal-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem; padding: 1.75rem 2rem 1.25rem; flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .art-modal-title {
+    font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold);
+  }
+  .art-modal-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+  .art-modal-close {
+    background: none; border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: var(--radius); padding: 6px 12px; cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .art-modal-close:hover { border-color: var(--gold); color: var(--gold); }
+  .art-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;
+  }
+  .art-option {
+    cursor: pointer; border-radius: 4.75% / 3.5%;
+    border: 2px solid transparent; transition: all 0.18s;
+    position: relative; overflow: hidden;
+  }
+  .art-option:hover { border-color: var(--arcane-light); transform: scale(1.03); }
+  .art-option.selected { border-color: var(--gold); }
+  .art-option img { width: 100%; display: block; border-radius: 3.75% / 2.5%; }
+  .art-label {
+    font-size: 0.72rem; color: var(--text-muted); text-align: center;
+    padding: 0.4rem 0.25rem; line-height: 1.3;
+  }
+  .art-option.selected .art-label { color: var(--gold); font-weight: 600; }
+  .art-selected-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: var(--gold); color: var(--void);
+    font-size: 0.65rem; font-weight: 700; padding: 2px 7px;
+    border-radius: 10px; font-family: 'Inter', sans-serif;
+  }
+
+  .art-grid-scroll {
+    flex: 1; overflow-y: auto; padding: 1.5rem 2rem;
+  }
+  .art-modal-footer {
+    flex-shrink: 0; padding: 1.25rem 2rem;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 1rem; justify-content: flex-end;
+    background: var(--surface);
+  }
+  /* ===== CART IMAGE POPUP ===== */
+  #cart-img-popup {
+    position: fixed; z-index: 9998;
+    pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    border-radius: 4.75% / 3.5%;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.75), 0 0 0 1.5px var(--gold);
+    width: 180px;
+  }
+  #cart-img-popup.visible { opacity: 1; }
+
+  .import-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  }
+  @media (max-width: 800px) { .import-layout { grid-template-columns: 1fr; } }
+  .import-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); padding: 1.75rem;
+  }
+  .import-card h3 {
+    font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold);
+    letter-spacing: 0.06em; margin-bottom: 0.5rem;
+  }
+  .import-card p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem; line-height: 1.6; }
+  .moxfield-input {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.875rem;
+    padding: 10px 14px; outline: none; transition: border-color 0.2s;
+    margin-bottom: 0.75rem;
+  }
+  .moxfield-input:focus { border-color: var(--arcane-light); }
+  .moxfield-input::placeholder { color: var(--text-dim); }
+  textarea.moxfield-input { resize: vertical; min-height: 180px; line-height: 1.6; }
+  .import-result {
+    margin-top: 1.5rem; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; display: none;
+  }
+  .import-result.visible { display: block; }
+  .import-result-header {
+    padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .import-result-header span { font-size: 0.8rem; color: var(--text-muted); }
+  .import-result-header strong { color: var(--gold); font-family: 'Cinzel', serif; font-size: 0.85rem; }
+  .import-card-list { max-height: 280px; overflow-y: auto; }
+  .import-card-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 1rem; border-bottom: 1px solid rgba(201,168,76,0.07);
+  }
+  .import-card-row:last-child { border-bottom: none; }
+  .import-qty {
+    background: var(--arcane-dim); color: var(--arcane-light);
+    font-size: 0.75rem; font-weight: 600; border-radius: 4px;
+    padding: 2px 7px; min-width: 28px; text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .import-card-name { font-size: 0.85rem; color: var(--text); flex: 1; }
+  .import-card-status {
+    font-size: 0.73rem; color: var(--text-muted); white-space: nowrap;
+  }
+  .import-card-status.found { color: #4ade80; }
+  .import-card-status.not-found { color: #f87171; }
+
+  /* ===== CUSTOM UPLOAD ===== */
+  .upload-zone {
+    border: 2px dashed var(--border-hover); border-radius: var(--radius-xl);
+    padding: 3.5rem 2rem; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--surface);
+    margin-bottom: 1.5rem;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--arcane-light);
+    background: rgba(107,33,168,0.08);
+  }
+  .upload-zone svg { margin-bottom: 1rem; opacity: 0.5; }
+  .upload-zone h3 {
+    font-family: 'Cinzel', serif; color: var(--text);
+    font-size: 1rem; margin-bottom: 0.5rem;
+  }
+  .upload-zone p { color: var(--text-muted); font-size: 0.85rem; }
+  #file-input { display: none; }
+  .upload-previews {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;
+  }
+  .upload-preview-item {
+    position: relative; border-radius: var(--radius-lg);
+    overflow: hidden; border: 1px solid var(--border);
+    aspect-ratio: 63/88;
+    background: var(--surface);
+  }
+  .upload-preview-item img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .upload-preview-remove {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.75); color: #f87171; border: none;
+    border-radius: 50%; width: 24px; height: 24px; cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .upload-preview-remove:hover { background: rgba(239,68,68,0.3); }
+  .upload-count-badge {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    background: var(--arcane); color: white; font-size: 0.7rem; font-weight: 600;
+    padding: 2px 10px; border-radius: 10px; white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ===== CART PANEL ===== */
+  #cart-panel {
+    position: fixed; right: 0; top: 0; bottom: 0;
+    width: 380px; background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 200; transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex; flex-direction: column;
+    box-shadow: -12px 0 40px rgba(0,0,0,0.5);
+  }
+  #cart-panel.open { transform: translateX(0); }
+  .cart-header {
+    padding: 1.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .cart-header h2 {
+    font-family: 'Cinzel', serif; color: var(--gold); font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+  .cart-close {
+    background: none; border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: var(--radius); padding: 5px 10px; cursor: pointer;
+    transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 0.8rem;
+  }
+  .cart-close:hover { border-color: var(--gold); color: var(--gold); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 1rem; }
+  .cart-item {
+    display: flex; gap: 0.75rem; padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.07);
+  }
+  .cart-item img { width: 56px; border-radius: 4px; flex-shrink: 0; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 0.85rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+  .cart-item-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .cart-item-price { font-size: 0.85rem; color: var(--gold); font-weight: 600; margin-top: 4px; }
+  .cart-item-remove {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 1rem; padding: 4px; align-self: flex-start; transition: color 0.15s;
+  }
+  .cart-item-remove:hover { color: #f87171; }
+  .cart-footer {
+    padding: 1.25rem; border-top: 1px solid var(--border); flex-shrink: 0;
+  }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem;
+  }
+  .cart-total span { font-size: 0.85rem; color: var(--text-muted); }
+  .cart-total strong { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1rem; }
+  .checkout-btn {
+    width: 100%; background: var(--arcane); color: white; border: none;
+    padding: 13px; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.06em;
+    transition: background 0.2s;
+  }
+  .checkout-btn:hover { background: var(--arcane-light); }
+  .cart-empty {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--text-dim); font-size: 0.875rem;
+  }
+  .cart-count-badge {
+    background: var(--arcane); color: white; border-radius: 50%;
+    font-size: 0.7rem; font-weight: 700; padding: 2px 6px;
+    margin-left: 6px; vertical-align: middle; display: none;
+  }
+
+  /* ===== LOADING / STATUS ===== */
+  .status-msg {
+    text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.9rem;
+  }
+  .status-msg.error { color: #f87171; }
+  .spin {
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid var(--border); border-top-color: var(--arcane-light);
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== SECTION LABELS ===== */
+  .section-eyebrow {
+    font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dim); margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.25rem;
+  }
+  .section-sub { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.75rem; }
+
+  /* ===== INFO STRIP ===== */
+  .info-strip {
+    background: var(--arcane-dim); border-bottom: 1px solid rgba(107,33,168,0.4);
+    padding: 0.6rem 2rem; text-align: center;
+    font-size: 0.8rem; color: rgba(232,224,240,0.7); letter-spacing: 0.03em;
+  }
+  .info-strip strong { color: var(--gold); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--void); border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem; text-align: center;
+    color: var(--text-dim); font-size: 0.8rem; line-height: 1.8;
+  }
+  footer strong { color: var(--text-muted); }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    nav { padding: 0 1rem; }
+    .tabs-container { padding: 0 1rem; }
+    .card-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+    #cart-panel { width: 100%; }
+  }
+
+  /* ===== MANA SYMBOLS (emoji fallbacks) ===== */
+  .mana-icon { font-size: 0.85em; }
+  .qty-ctrl { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .qty-btn {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    width: 22px; height: 22px; border-radius: 4px; cursor: pointer;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .qty-btn:hover { border-color: var(--arcane-light); }
+  .qty-num { font-size: 0.8rem; min-width: 18px; text-align: center; color: var(--text); }
+  /* ===== CHECKOUT MODAL ===== */
+  #checkout-modal {
+    display: none; position: fixed; inset: 0; z-index: 10001;
+    background: rgba(0,0,0,0.82); align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  #checkout-modal.open { display: flex; }
+  .checkout-modal-inner {
+    background: var(--surface); border: 1px solid var(--border-hover);
+    border-radius: var(--radius-xl); max-width: 520px; width: 95%;
+    max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .checkout-modal-header {
+    padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .checkout-modal-header h2 {
+    font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold); letter-spacing: 0.06em;
+  }
+  .checkout-modal-body { flex: 1; overflow-y: auto; padding: 1.5rem 1.75rem; }
+  .checkout-modal-footer {
+    flex-shrink: 0; padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border); background: var(--surface);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; font-size: 0.78rem; color: var(--text-muted);
+    letter-spacing: 0.04em; margin-bottom: 0.35rem; text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+  }
+  .form-group input, .form-group select {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 0.9rem;
+    padding: 9px 13px; outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--arcane-light); }
+  .form-group input::placeholder { color: var(--text-dim); }
+  .checkout-order-summary {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+  }
+  .checkout-order-summary h3 {
+    font-family: 'Cinzel', serif; font-size: 0.78rem; color: var(--gold);
+    letter-spacing: 0.08em; margin-bottom: 0.75rem;
+  }
+  .checkout-order-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;
+  }
+  .checkout-order-row.total {
+    border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.5rem;
+    color: var(--text); font-weight: 600;
+  }
+  .checkout-order-row.total strong { color: var(--gold); font-family: 'Cinzel', serif; }
+  #paypal-button-container { margin-top: 0.75rem; min-height: 48px; }
+  .checkout-steps { display: flex; gap: 0; margin-bottom: 1.5rem; }
+  .checkout-step {
+    flex: 1; text-align: center; font-size: 0.72rem; letter-spacing: 0.08em;
+    text-transform: uppercase; font-family: 'Cinzel', serif;
+    padding: 0.5rem; border-bottom: 2px solid var(--border); color: var(--text-dim);
+  }
+  .checkout-step.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .checkout-step.done { color: #4ade80; border-bottom-color: #4ade80; }
+  .checkout-section { display: none; }
+  .checkout-section.active { display: block; }
+  .checkout-success {
+    text-align: center; padding: 2rem 1rem;
+  }
+  .checkout-success .success-icon {
+    font-size: 3rem; margin-bottom: 1rem;
+  }
+  .checkout-success h3 {
+    font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1rem; margin-bottom: 0.75rem;
+  }
+  .checkout-success p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.7; }
+  .checkout-success .order-ref {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.6rem 1rem; margin: 1rem 0;
+    font-family: monospace; font-size: 0.85rem; color: var(--gold); letter-spacing: 0.05em;
+  }
+  .checkout-error {
+    background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+    border-radius: var(--radius); padding: 0.75rem 1rem; margin-top: 0.75rem;
+    font-size: 0.82rem; color: #fca5a5; display: none;
+  }
+  .checkout-error.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div class="info-strip">
+  <strong>Proxy cards are for personal/playtest use only.</strong> Not affiliated with Wizards of the Coast. Card data via Scryfall API.
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Arcane<span>Press</span></a>
+  <div class="nav-links">
+    <a onclick="switchTab('browse')" class="active" id="nav-browse">Browse</a>
+    <a onclick="switchTab('import')" id="nav-import">Deck Import</a>
+    <a onclick="switchTab('custom')" id="nav-custom">Custom Upload</a>
+  </div>
+  <button class="nav-cart" onclick="toggleCart()">
+    Cart <span id="cart-badge" class="cart-count-badge">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Premium MTG Proxy Cards</div>
+  <h1>Your spells,<br><em>flawlessly printed.</em></h1>
+  <p>High-quality proxy cards for playtesting, collecting, and EDH. Upload your art or browse from the full Scryfall catalog.</p>
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="switchTab('browse')">Browse Cards</button>
+    <button class="btn-outline" onclick="switchTab('import')">Import a Deck</button>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="tabs-container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('browse')" id="tab-browse">Browse Cards</button>
+    <button class="tab-btn" onclick="switchTab('import')" id="tab-import">Deck Import</button>
+    <button class="tab-btn" onclick="switchTab('custom')" id="tab-custom">Custom Upload</button>
+  </div>
+
+  <!-- BROWSE TAB -->
+  <div class="tab-panel active" id="panel-browse">
+    <div class="section-eyebrow">Scryfall Catalog</div>
+    <div class="section-title">Browse Cards</div>
+    <p class="section-sub">Search the full Scryfall database. Hover for card details, click to choose your preferred art.</p>
+
+    <div class="search-row">
+      <input class="search-input" type="text" id="search-q" placeholder="Card name, e.g. Lightning Bolt…" onkeydown="if(event.key==='Enter')searchCards()">
+      <select class="search-input" id="search-color" style="max-width:140px">
+        <option value="">All Colors</option>
+        <option value="W">White</option>
+        <option value="U">Blue</option>
+        <option value="B">Black</option>
+        <option value="R">Red</option>
+        <option value="G">Green</option>
+        <option value="C">Colorless</option>
+      </select>
+      <select class="search-input" id="search-type" style="max-width:160px">
+        <option value="">All Types</option>
+        <option value="creature">Creature</option>
+        <option value="instant">Instant</option>
+        <option value="sorcery">Sorcery</option>
+        <option value="enchantment">Enchantment</option>
+        <option value="artifact">Artifact</option>
+        <option value="planeswalker">Planeswalker</option>
+        <option value="land">Land</option>
+      </select>
+      <button class="search-btn" onclick="searchCards()">Search</button>
+    </div>
+
+    <div id="browse-status"></div>
+    <div class="card-grid" id="card-grid"></div>
+    <div class="load-more-row" id="load-more-row" style="display:none">
+      <button class="btn-outline" onclick="loadMoreCards()">Load more cards</button>
+    </div>
+  </div>
+
+  <!-- DECK IMPORT TAB -->
+  <div class="tab-panel" id="panel-import">
+    <div class="section-eyebrow">Deck Import</div>
+    <div class="section-title">Import from Moxfield</div>
+    <p class="section-sub">Paste a Moxfield deck URL or manually enter your card list to quickly add an entire deck.</p>
+
+    <div class="import-layout">
+      <!-- Moxfield URL -->
+      <div class="import-card">
+        <h3>Moxfield URL</h3>
+        <p>Paste a Moxfield deck URL and we'll extract the full card list automatically.</p>
+        <input class="moxfield-input" type="text" id="mox-url" placeholder="https://www.moxfield.com/decks/…">
+        <button class="search-btn" style="width:100%" onclick="importMoxfield()">Import Deck</button>
+        <div id="mox-result" class="import-result"></div>
+      </div>
+
+      <!-- Manual List -->
+      <div class="import-card">
+        <h3>Manual Card List</h3>
+        <p>Paste your deck list in standard format: <code style="background:var(--surface2);padding:1px 5px;border-radius:4px;font-size:0.8rem">4 Lightning Bolt</code></p>
+        <textarea class="moxfield-input" id="manual-list" placeholder="4 Lightning Bolt&#10;4 Brainstorm&#10;2 Force of Will&#10;1 Black Lotus&#10;..."></textarea>
+        <button class="search-btn" style="width:100%" onclick="importManual()">Parse List</button>
+        <div id="manual-result" class="import-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM UPLOAD TAB -->
+  <div class="tab-panel" id="panel-custom">
+    <div class="section-eyebrow">Custom Artwork</div>
+    <div class="section-title">Upload Your Own Art</div>
+    <p class="section-sub">Send us custom card images and we'll print them to exact MTG card dimensions (63mm × 88mm).</p>
+
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()"
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="handleDrop(event)">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 1rem;color:var(--arcane-light)">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <h3>Drop card images here</h3>
+      <p>PNG, JPG or WebP · Max 20MB per file · Min 750×1050px recommended</p>
+    </div>
+    <input type="file" id="file-input" multiple accept="image/*" onchange="handleFileSelect(event)">
+    <div class="upload-previews" id="upload-previews"></div>
+    <div id="upload-add-cart" style="display:none;margin-top:1.5rem">
+      <button class="btn-primary" onclick="addUploadsToCart()">Add all uploads to cart</button>
+    </div>
+  </div>
+</div><!-- /tabs-container -->
+
+<!-- HOVER TOOLTIP -->
+<div id="card-tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-cost" id="tt-cost"></div>
+  <div class="tt-type" id="tt-type"></div>
+  <div class="tt-oracle" id="tt-oracle"></div>
+  <div class="tt-flavor" id="tt-flavor"></div>
+  <div class="tt-pt" id="tt-pt"></div>
+  <div class="tt-set" id="tt-set"></div>
+</div>
+
+<!-- ART PICKER MODAL -->
+<div id="art-modal">
+  <div class="art-modal-inner">
+    <div class="art-modal-header">
+      <div>
+        <div class="art-modal-title" id="art-modal-title">Choose Art Version</div>
+        <div class="art-modal-subtitle" id="art-modal-subtitle">Select which printing to use for this card</div>
+      </div>
+      <button class="art-modal-close" onclick="closeArtModal()">Close</button>
+    </div>
+    <div class="art-grid-scroll">
+      <div class="art-grid" id="art-grid"></div>
+    </div>
+    <div class="art-modal-footer">
+      <button class="btn-outline" onclick="closeArtModal()">Cancel</button>
+      <button class="btn-primary" onclick="confirmArtSelection()">Use this art &amp; add to cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART IMAGE POPUP -->
+<img id="cart-img-popup" src="" alt="">
+
+<!-- CART PANEL -->
+<div id="cart-panel">
+  <div class="cart-header">
+    <h2>Your Order</h2>
+    <button class="cart-close" onclick="toggleCart()">✕ Close</button>
+  </div>
+  <div class="cart-items" id="cart-items-list"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total (<span id="cart-count">0</span> cards)</span>
+      <strong id="cart-total-price">£0.00</strong>
+    </div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal">
+  <div class="checkout-modal-inner">
+    <div class="checkout-modal-header">
+      <h2>Checkout</h2>
+      <button class="art-modal-close" onclick="closeCheckout()">✕ Close</button>
+    </div>
+    <div class="checkout-modal-body">
+      <div class="checkout-steps">
+        <div class="checkout-step active" id="step-tab-details">Details</div>
+        <div class="checkout-step" id="step-tab-payment">Payment</div>
+        <div class="checkout-step" id="step-tab-confirm">Confirm</div>
+      </div>
+
+      <!-- STEP 1: Shipping details -->
+      <div class="checkout-section active" id="step-details">
+        <div class="checkout-order-summary" id="checkout-summary"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="co-fname" placeholder="Aragorn">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="co-lname" placeholder="Elessar">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="co-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>Address Line 1</label>
+          <input type="text" id="co-addr1" placeholder="123 High Street">
+        </div>
+        <div class="form-group">
+          <label>Address Line 2 (optional)</label>
+          <input type="text" id="co-addr2" placeholder="Flat 4">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="co-city" placeholder="London">
+          </div>
+          <div class="form-group">
+            <label>Postcode / ZIP</label>
+            <input type="text" id="co-postcode" placeholder="SW1A 1AA">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <select id="co-country">
+            <option value="GB">United Kingdom</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="AU">Australia</option>
+            <option value="DE">Germany</option>
+            <option value="FR">France</option>
+            <option value="NL">Netherlands</option>
+            <option value="ES">Spain</option>
+            <option value="IT">Italy</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+        <div class="checkout-error" id="details-error"></div>
+      </div>
+
+      <!-- STEP 2: PayPal payment -->
+      <div class="checkout-section" id="step-payment">
+        <div class="checkout-order-summary" id="checkout-summary-2"></div>
+        <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.6">
+          Complete your payment securely via PayPal. You can pay with your PayPal balance or any debit/credit card.
+        </p>
+        <div id="paypal-button-container"></div>
+        <div class="checkout-error" id="payment-error"></div>
+      </div>
+
+      <!-- STEP 3: Confirmation -->
+      <div class="checkout-section" id="step-confirm">
+        <div class="checkout-success">
+          <div class="success-icon">✨</div>
+          <h3>Order Placed!</h3>
+          <p>Thank you for your order. We've received your payment and will begin printing your proxy cards.</p>
+          <div class="order-ref" id="order-ref-display"></div>
+          <p>A confirmation email will be sent to <strong id="confirm-email"></strong>.<br>
+          Orders typically ship within 3–5 business days.</p>
+        </div>
+      </div>
+    </div>
+    <div class="checkout-modal-footer" id="checkout-footer">
+      <button class="checkout-btn" id="checkout-next-btn" onclick="checkoutNext()">Continue to Payment</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>ArcanePress</strong> · Proxy cards for personal playtesting use only.<br>
+  Magic: The Gathering and all related properties are owned by Wizards of the Coast LLC.<br>
+  Card data courtesy of <a href="https://scryfall.com" target="_blank">Scryfall</a>.
+</footer>
+
+<script>
+// ===== STATE =====
+const cart = [];
+const cardArtPrefs = {};
+let currentSearchData = null;
+let nextPageUrl = null;
+let activeArtCard = null;
+let activeArtPrints = [];
+let selectedArtIndex = 0;
+let hoverTimeout = null;
+
+const PRICE_PER_CARD = 0.55;
+
+// ===== TAB SWITCHING =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  const navEl = document.getElementById('nav-' + tab);
+  if (navEl) navEl.classList.add('active');
+}
+
+// ===== SCRYFALL SEARCH =====
+async function searchCards() {
+  const q = document.getElementById('search-q').value.trim();
+  const color = document.getElementById('search-color').value;
+  const type = document.getElementById('search-type').value;
+
+  let query = q || 'type:creature';
+  if (color) query += ` color=${color}`;
+  if (type) query += ` type:${type}`;
+  if (!q && !color && !type) query = 'is:firstprint order:edhrec';
+
+  const status = document.getElementById('browse-status');
+  const grid = document.getElementById('card-grid');
+  status.innerHTML = '<div class="status-msg"><span class="spin"></span>Searching Scryfall…</div>';
+  grid.innerHTML = '';
+  document.getElementById('load-more-row').style.display = 'none';
+
+  try {
+    const url = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&unique=cards&order=edhrec`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.object === 'error') {
+      status.innerHTML = `<div class="status-msg error">No cards found. Try a different search.</div>`;
+      return;
+    }
+    currentSearchData = data;
+    nextPageUrl = data.next_page || null;
+    status.innerHTML = `<div style="color:var(--text-dim);font-size:0.8rem;margin-bottom:1rem">${data.total_cards.toLocaleString()} cards found</div>`;
+    renderCards(data.data, false);
+    document.getElementById('load-more-row').style.display = nextPageUrl ? 'block' : 'none';
+  } catch(e) {
+    status.innerHTML = `<div class="status-msg error">Could not connect to Scryfall. Check your connection.</div>`;
+  }
+}
+
+async function loadMoreCards() {
+  if (!nextPageUrl) return;
+  const grid = document.getElementById('card-grid');
+  const btn = document.querySelector('#load-more-row button');
+  btn.textContent = 'Loading…'; btn.disabled = true;
+  try {
+    const res = await fetch(nextPageUrl);
+    const data = await res.json();
+    nextPageUrl = data.next_page || null;
+    renderCards(data.data, true);
+    document.getElementById('load-more-row').style.display = nextPageUrl ? 'block' : 'none';
+  } catch(e) {}
+  btn.textContent = 'Load more cards'; btn.disabled = false;
+}
+
+function getCardImg(card) {
+  if (cardArtPrefs[card.id]) return cardArtPrefs[card.id];
+  if (card.image_uris) return card.image_uris.normal || card.image_uris.large;
+  if (card.card_faces && card.card_faces[0].image_uris)
+    return card.card_faces[0].image_uris.normal;
+  return null;
+}
+
+function renderCards(cards, append) {
+  const grid = document.getElementById('card-grid');
+  if (!append) grid.innerHTML = '';
+  cards.forEach(card => {
+    const img = getCardImg(card);
+    if (!img) return;
+    const item = document.createElement('div');
+    item.className = 'card-item';
+    item.dataset.cardId = card.id;
+    item.innerHTML = `
+      <img src="${img}" alt="${card.name}" loading="lazy" onerror="this.style.display='none'">
+      <button class="add-btn" onclick="event.stopPropagation();addToCartDirect(${JSON.stringify(card).replace(/"/g,'&quot;')})">+ Add to cart</button>
+    `;
+    item.addEventListener('mouseenter', (e) => showTooltip(card, e));
+    item.addEventListener('mousemove', (e) => moveTooltip(e));
+    item.addEventListener('mouseleave', hideTooltip);
+    item.addEventListener('click', () => openArtModal(card));
+    grid.appendChild(item);
+  });
+}
+
+// ===== TOOLTIP =====
+function formatManaCost(cost) {
+  if (!cost) return '';
+  return cost.replace(/\{([^}]+)\}/g, (_, m) => {
+    const map = {W:'⚪',U:'🔵',B:'⚫',R:'🔴',G:'🟢',C:'◇',T:'⟳',X:'✕'};
+    return map[m] || `{${m}}`;
+  });
+}
+
+function showTooltip(card, e) {
+  clearTimeout(hoverTimeout);
+  hoverTimeout = setTimeout(() => {
+    const tt = document.getElementById('card-tooltip');
+    const oracle = card.oracle_text || (card.card_faces ? card.card_faces.map(f=>f.oracle_text).join('\n─────\n') : '');
+    const flavor = card.flavor_text || (card.card_faces ? (card.card_faces[0].flavor_text||'') : '');
+    const pt = card.power ? `${card.power} / ${card.toughness}` : (card.loyalty ? `Loyalty: ${card.loyalty}` : '');
+    const cost = formatManaCost(card.mana_cost || (card.card_faces ? card.card_faces[0].mana_cost : ''));
+    const cmc = card.cmc ? ` (CMC ${card.cmc})` : '';
+    const rarity = card.rarity ? card.rarity.charAt(0).toUpperCase()+card.rarity.slice(1) : '';
+    document.getElementById('tt-name').textContent = card.name;
+    document.getElementById('tt-cost').textContent = `${cost}${cmc}`;
+    document.getElementById('tt-type').textContent = card.type_line || '';
+    document.getElementById('tt-oracle').textContent = oracle;
+    document.getElementById('tt-flavor').textContent = flavor ? `"${flavor}"` : '';
+    document.getElementById('tt-pt').textContent = pt;
+    document.getElementById('tt-set').textContent = `${card.set_name} · ${rarity} · #${card.collector_number}`;
+    moveTooltip(e);
+    tt.classList.add('visible');
+  }, 120);
+}
+
+function moveTooltip(e) {
+  const tt = document.getElementById('card-tooltip');
+  const pad = 16, w = 320, h = tt.offsetHeight || 280;
+  let x = e.clientX + pad, y = e.clientY - h/2;
+  if (x + w > window.innerWidth - 8) x = e.clientX - w - pad;
+  if (y < 8) y = 8;
+  if (y + h > window.innerHeight - 8) y = window.innerHeight - h - 8;
+  tt.style.left = x + 'px'; tt.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  clearTimeout(hoverTimeout);
+  document.getElementById('card-tooltip').classList.remove('visible');
+}
+
+// ===== ART MODAL =====
+async function openArtModal(card) {
+  hideTooltip();
+  activeArtCard = card;
+  selectedArtIndex = 0;
+  document.getElementById('art-modal-title').textContent = card.name;
+  document.getElementById('art-modal-subtitle').textContent = 'Loading all printings…';
+  document.getElementById('art-grid').innerHTML = '<div class="status-msg"><span class="spin"></span>Fetching printings…</div>';
+  document.getElementById('art-modal').classList.add('open');
+
+  try {
+    const res = await fetch(`https://api.scryfall.com/cards/search?q=!"${encodeURIComponent(card.name)}"&unique=prints&order=released`);
+    const data = await res.json();
+    activeArtPrints = data.data || [card];
+    document.getElementById('art-modal-subtitle').textContent = `${activeArtPrints.length} printing${activeArtPrints.length!==1?'s':''} available`;
+    renderArtGrid();
+  } catch(e) {
+    activeArtPrints = [card];
+    renderArtGrid();
+  }
+}
+
+function renderArtGrid() {
+  const grid = document.getElementById('art-grid');
+  grid.innerHTML = '';
+  activeArtPrints.forEach((print, i) => {
+    const img = print.image_uris ? print.image_uris.normal : (print.card_faces ? print.card_faces[0].image_uris?.normal : null);
+    if (!img) return;
+    const isSelected = cardArtPrefs[activeArtCard.id] === img || (i === 0 && !cardArtPrefs[activeArtCard.id]);
+    const rarity = print.rarity ? print.rarity.charAt(0).toUpperCase() + print.rarity.slice(1) : '';
+    const div = document.createElement('div');
+    div.className = `art-option${isSelected ? ' selected' : ''}`;
+    div.dataset.index = i;
+    div.innerHTML = `
+      <img src="${img}" alt="${print.set_name}" loading="lazy">
+      ${isSelected ? '<div class="art-selected-badge">✓</div>' : ''}
+      <div class="art-label">${print.set_name}<br><span style="color:var(--text-dim)">${rarity} · #${print.collector_number}</span></div>
+    `;
+    div.addEventListener('click', () => selectArt(i, img));
+    grid.appendChild(div);
+  });
+}
+
+function selectArt(index, imgUrl) {
+  selectedArtIndex = index;
+  if (activeArtCard) cardArtPrefs[activeArtCard.id] = imgUrl;
+  // Update grid UI
+  document.querySelectorAll('.art-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === index);
+    const badge = el.querySelector('.art-selected-badge');
+    if (i === index && !badge) {
+      const b = document.createElement('div');
+      b.className = 'art-selected-badge'; b.textContent = '✓';
+      el.appendChild(b);
+    } else if (i !== index && badge) badge.remove();
+  });
+  // Update card in grid
+  if (activeArtCard) {
+    const gridEl = document.querySelector(`[data-card-id="${activeArtCard.id}"] img`);
+    if (gridEl) gridEl.src = imgUrl;
+  }
+}
+
+function closeArtModal() {
+  document.getElementById('art-modal').classList.remove('open');
+  activeArtCard = null;
+}
+
+function confirmArtSelection() {
+  if (activeArtCard) addToCartDirect(activeArtCard);
+  closeArtModal();
+}
+
+// ===== CART =====
+function addToCartDirect(card) {
+  const img = getCardImg(card);
+  const existing = cart.find(i => i.id === card.id);
+  if (existing) { existing.qty++; }
+  else { cart.push({ id: card.id, name: card.name, img, qty: 1, type: 'catalog' }); }
+  updateCartUI();
+  flashCartBadge();
+}
+
+function flashCartBadge() {
+  const badge = document.getElementById('cart-badge');
+  badge.style.background = 'var(--gold)';
+  badge.style.color = 'var(--void)';
+  setTimeout(() => { badge.style.background = 'var(--arcane)'; badge.style.color = 'white'; }, 600);
+}
+
+function removeFromCart(id) {
+  const idx = cart.findIndex(i => i.id === id);
+  if (idx !== -1) cart.splice(idx, 1);
+  updateCartUI();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const badge = document.getElementById('cart-badge');
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'inline' : 'none';
+  document.getElementById('cart-count').textContent = total;
+  document.getElementById('cart-total-price').textContent = `£${(total * PRICE_PER_CARD).toFixed(2)}`;
+
+  const list = document.getElementById('cart-items-list');
+  if (cart.length === 0) {
+    list.innerHTML = '<div class="cart-empty">Your cart is empty.<br>Browse cards or import a deck to get started.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  cart.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <img src="${item.img}" alt="${item.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">${item.type === 'custom' ? 'Custom art' : 'Catalog card'}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+        </div>
+        <div class="cart-item-price">£${(item.qty * PRICE_PER_CARD).toFixed(2)}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart('${item.id}')" title="Remove">✕</button>
+    `;
+    div.addEventListener('mouseenter', (e) => showCartImgPopup(item.img, e));
+    div.addEventListener('mousemove', (e) => moveCartImgPopup(e));
+    div.addEventListener('mouseleave', hideCartImgPopup);
+    list.appendChild(div);
+  });
+}
+
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+}
+
+// ===== CART IMAGE POPUP =====
+function showCartImgPopup(imgUrl, e) {
+  const popup = document.getElementById('cart-img-popup');
+  popup.src = imgUrl;
+  moveCartImgPopup(e);
+  popup.classList.add('visible');
+}
+function moveCartImgPopup(e) {
+  const popup = document.getElementById('cart-img-popup');
+  const w = 180, h = Math.round(w * 88/63);
+  const panelRect = document.getElementById('cart-panel').getBoundingClientRect();
+  let x = panelRect.left - w - 16;
+  let y = e.clientY - h / 2;
+  if (y < 8) y = 8;
+  if (y + h > window.innerHeight - 8) y = window.innerHeight - h - 8;
+  popup.style.left = x + 'px';
+  popup.style.top = y + 'px';
+}
+function hideCartImgPopup() {
+  document.getElementById('cart-img-popup').classList.remove('visible');
+}
+
+// ===== MOXFIELD IMPORT =====
+async function importMoxfield() {
+  const url = document.getElementById('mox-url').value.trim();
+  if (!url) { alert('Please enter a Moxfield URL'); return; }
+  const match = url.match(/moxfield\.com\/decks\/([A-Za-z0-9_-]+)/);
+  if (!match) { alert('Please enter a valid Moxfield deck URL'); return; }
+  const deckId = match[1];
+
+  const resultEl = document.getElementById('mox-result');
+  resultEl.classList.add('visible');
+  resultEl.innerHTML = '<div class="status-msg"><span class="spin"></span>Fetching deck from Moxfield…</div>';
+
+  try {
+    // Moxfield public API
+    const res = await fetch(`https://api2.moxfield.com/v3/decks/all/${deckId}`);
+    if (!res.ok) throw new Error('Deck not found or private');
+    const data = await res.json();
+    const cards = [];
+    const zones = ['mainboard','sideboard','commanders','companions'];
+    zones.forEach(zone => {
+      if (data[zone]) Object.values(data[zone]).forEach(entry => {
+        cards.push({ qty: entry.quantity, name: entry.card?.name || entry.name });
+      });
+    });
+    renderImportResult(resultEl, `${data.name || 'Moxfield Deck'} (${cards.length} cards)`, cards);
+  } catch(e) {
+    resultEl.innerHTML = `<div class="status-msg error">Could not load deck. It may be private or the URL is invalid.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function importManual() {
+  const raw = document.getElementById('manual-list').value.trim();
+  if (!raw) { alert('Please enter a card list'); return; }
+  const lines = raw.split('\n').filter(l => l.trim());
+  const cards = [];
+  lines.forEach(line => {
+    line = line.trim();
+    const m = line.match(/^(\d+)x?\s+(.+)$/);
+    if (m) cards.push({ qty: parseInt(m[1]), name: m[2].trim() });
+    else if (line) cards.push({ qty: 1, name: line });
+  });
+  const resultEl = document.getElementById('manual-result');
+  resultEl.classList.add('visible');
+  renderImportResult(resultEl, `${cards.length} card entries`, cards);
+}
+
+async function renderImportResult(container, title, cards) {
+  container.innerHTML = `
+    <div class="import-result-header">
+      <strong>${title}</strong>
+      <button class="search-btn" style="padding:5px 14px;font-size:0.78rem" onclick="addImportToCart(this)">Add all to cart</button>
+    </div>
+    <div class="import-card-list" id="import-list-inner">
+      ${cards.map(c => `
+        <div class="import-card-row" data-name="${c.name.replace(/"/g,'&quot;')}">
+          <span class="import-qty">${c.qty}</span>
+          <span class="import-card-name">${c.name}</span>
+          <span class="import-card-status" id="status-${c.name.replace(/[^a-z0-9]/gi,'_')}">Looking up…</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  container.dataset.cards = JSON.stringify(cards);
+
+  // Look up each card in Scryfall
+  for (const card of cards) {
+    const statusId = 'status-' + card.name.replace(/[^a-z0-9]/gi,'_');
+    const statusEl = document.getElementById(statusId);
+    try {
+      const res = await fetch(`https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(card.name)}`);
+      const data = await res.json();
+      if (data.object === 'card') {
+        card.scryfall = data;
+        if (statusEl) { statusEl.textContent = '✓ Found'; statusEl.className = 'import-card-status found'; }
+      } else {
+        if (statusEl) { statusEl.textContent = '✗ Not found'; statusEl.className = 'import-card-status not-found'; }
+      }
+    } catch(e) {
+      if (statusEl) { statusEl.textContent = '✗ Error'; statusEl.className = 'import-card-status not-found'; }
+    }
+    await new Promise(r => setTimeout(r, 80)); // Scryfall rate limit
+  }
+}
+
+function addImportToCart(btn) {
+  const container = btn.closest('.import-result');
+  let cards = [];
+  try { cards = JSON.parse(container.dataset.cards || '[]'); } catch(e) {}
+  let added = 0;
+  cards.forEach(card => {
+    if (card.scryfall) {
+      for (let i = 0; i < card.qty; i++) addToCartDirect(card.scryfall);
+      added += card.qty;
+    }
+  });
+  if (added > 0) {
+    btn.textContent = `✓ ${added} added`;
+    btn.style.background = '#16a34a';
+    setTimeout(() => { btn.textContent = 'Add all to cart'; btn.style.background = ''; }, 2500);
+    toggleCart();
+  } else {
+    btn.textContent = 'No cards found';
+    setTimeout(() => { btn.textContent = 'Add all to cart'; }, 2000);
+  }
+}
+
+// ===== CUSTOM UPLOAD =====
+const uploadedFiles = [];
+
+function handleFileSelect(e) {
+  Array.from(e.target.files).forEach(addUploadFile);
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag-over');
+  Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(addUploadFile);
+}
+
+function addUploadFile(file) {
+  const id = 'upload_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  const url = URL.createObjectURL(file);
+  uploadedFiles.push({ id, url, name: file.name });
+  renderUploadPreviews();
+}
+
+function renderUploadPreviews() {
+  const cont = document.getElementById('upload-previews');
+  cont.innerHTML = '';
+  uploadedFiles.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'upload-preview-item';
+    div.innerHTML = `
+      <img src="${f.url}" alt="${f.name}">
+      <button class="upload-preview-remove" onclick="removeUpload(${i})" title="Remove">✕</button>
+      <div class="upload-count-badge">${f.name.length > 18 ? f.name.slice(0,15)+'…' : f.name}</div>
+    `;
+    cont.appendChild(div);
+  });
+  document.getElementById('upload-add-cart').style.display = uploadedFiles.length > 0 ? 'block' : 'none';
+}
+
+function removeUpload(i) {
+  URL.revokeObjectURL(uploadedFiles[i].url);
+  uploadedFiles.splice(i, 1);
+  renderUploadPreviews();
+}
+
+function addUploadsToCart() {
+  uploadedFiles.forEach(f => {
+    const existing = cart.find(i => i.id === f.id);
+    if (existing) existing.qty++;
+    else cart.push({ id: f.id, name: f.name.replace(/\.[^/.]+$/, ''), img: f.url, qty: 1, type: 'custom' });
+  });
+  updateCartUI();
+  flashCartBadge();
+  toggleCart();
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Load featured cards on start
+  fetch('https://api.scryfall.com/cards/search?q=is:firstprint+order:edhrec&unique=cards')
+    .then(r => r.json())
+    .then(data => {
+      if (data.data) {
+        currentSearchData = data;
+        nextPageUrl = data.next_page || null;
+        const status = document.getElementById('browse-status');
+        status.innerHTML = `<div style="color:var(--text-dim);font-size:0.8rem;margin-bottom:1rem">Popular cards — search above to find any card</div>`;
+        renderCards(data.data, false);
+        document.getElementById('load-more-row').style.display = nextPageUrl ? 'block' : 'none';
+      }
+    })
+    .catch(() => {
+      document.getElementById('browse-status').innerHTML = '<div class="status-msg">Search for a card above to browse the catalog.</div>';
+    });
+  updateCartUI();
+});
+
+// Close cart on outside click
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('cart-panel');
+  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.nav-cart')) {
+    panel.classList.remove('open');
+  }
+});
+
+// Close art modal on backdrop click
+document.getElementById('art-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('art-modal')) closeArtModal();
+});
+
+// Close checkout modal on backdrop click
+document.getElementById('checkout-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('checkout-modal')) closeCheckout();
+});
+
+// ===== CHECKOUT =====
+let checkoutStep = 1;
+let paypalRendered = false;
+let pendingOrderId = null;
+
+function buildSummaryHTML(containerId) {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const price = (total * PRICE_PER_CARD).toFixed(2);
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const rows = cart.slice(0, 5).map(i =>
+    `<div class="checkout-order-row"><span>${i.qty}× ${i.name}</span><span>£${(i.qty * PRICE_PER_CARD).toFixed(2)}</span></div>`
+  ).join('');
+  const more = cart.length > 5 ? `<div class="checkout-order-row" style="color:var(--text-dim)">+${cart.length - 5} more items…</div>` : '';
+  el.innerHTML = `
+    <h3>Order Summary</h3>
+    ${rows}${more}
+    <div class="checkout-order-row total"><span>Total (${total} cards)</span><strong>£${price}</strong></div>
+  `;
+}
+
+function openCheckout() {
+  if (cart.length === 0) { alert('Your cart is empty.'); return; }
+  checkoutStep = 1;
+  paypalRendered = false;
+  pendingOrderId = null;
+  setCheckoutStep(1);
+  buildSummaryHTML('checkout-summary');
+  document.getElementById('checkout-modal').classList.add('open');
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+}
+
+function setCheckoutStep(n) {
+  checkoutStep = n;
+  ['details','payment','confirm'].forEach((s, i) => {
+    document.getElementById('step-' + s).classList.toggle('active', i + 1 === n);
+    const tab = document.getElementById('step-tab-' + s);
+    tab.classList.remove('active','done');
+    if (i + 1 === n) tab.classList.add('active');
+    else if (i + 1 < n) tab.classList.add('done');
+  });
+  const footer = document.getElementById('checkout-footer');
+  const btn = document.getElementById('checkout-next-btn');
+  if (n === 1) { footer.style.display = 'block'; btn.textContent = 'Continue to Payment'; }
+  else if (n === 2) { footer.style.display = 'none'; }
+  else { footer.style.display = 'none'; }
+}
+
+async function checkoutNext() {
+  if (checkoutStep === 1) {
+    // Validate
+    const required = { 'co-fname': 'First name', 'co-lname': 'Last name', 'co-email': 'Email', 'co-addr1': 'Address', 'co-city': 'City', 'co-postcode': 'Postcode' };
+    for (const [id, label] of Object.entries(required)) {
+      if (!document.getElementById(id).value.trim()) {
+        showCheckoutError('details-error', `Please enter your ${label}.`);
+        return;
+      }
+    }
+    const email = document.getElementById('co-email').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showCheckoutError('details-error', 'Please enter a valid email address.');
+      return;
+    }
+    hideCheckoutError('details-error');
+    buildSummaryHTML('checkout-summary-2');
+    setCheckoutStep(2);
+    if (!paypalRendered) renderPayPalButton();
+  }
+}
+
+function showCheckoutError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('visible');
+}
+function hideCheckoutError(id) {
+  document.getElementById(id).classList.remove('visible');
+}
+
+function renderPayPalButton() {
+  paypalRendered = true;
+  if (typeof paypal === 'undefined') {
+    document.getElementById('paypal-button-container').innerHTML =
+      '<div style="color:#fca5a5;font-size:0.83rem;padding:0.75rem">PayPal SDK not loaded. Check your client ID in the script tag.</div>';
+    return;
+  }
+  paypal.Buttons({
+    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' },
+
+    async createOrder() {
+      hideCheckoutError('payment-error');
+      // Upload any custom-art files first, get S3 keys back
+      const customKeys = await uploadCustomFiles();
+      const shippingData = {
+        firstName: document.getElementById('co-fname').value.trim(),
+        lastName: document.getElementById('co-lname').value.trim(),
+        email: document.getElementById('co-email').value.trim(),
+        address1: document.getElementById('co-addr1').value.trim(),
+        address2: document.getElementById('co-addr2').value.trim(),
+        city: document.getElementById('co-city').value.trim(),
+        postcode: document.getElementById('co-postcode').value.trim(),
+        country: document.getElementById('co-country').value,
+      };
+      const orderPayload = {
+        items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, type: i.type, imgUrl: i.img })),
+        shipping: shippingData,
+        customFileKeys: customKeys,
+        totalGBP: (cart.reduce((s, i) => s + i.qty, 0) * PRICE_PER_CARD).toFixed(2),
+      };
+      try {
+        const res = await fetch('/.netlify/functions/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        pendingOrderId = data.internalOrderId;
+        return data.paypalOrderId;
+      } catch(err) {
+        showCheckoutError('payment-error', 'Could not create order: ' + err.message);
+        throw err;
+      }
+    },
+
+    async onApprove(data) {
+      try {
+        const res = await fetch('/.netlify/functions/capture-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paypalOrderId: data.orderID, internalOrderId: pendingOrderId }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const result = await res.json();
+        // Show confirmation
+        document.getElementById('order-ref-display').textContent = 'Order ref: ' + (result.internalOrderId || pendingOrderId || 'AP-' + Date.now());
+        document.getElementById('confirm-email').textContent = document.getElementById('co-email').value.trim();
+        setCheckoutStep(3);
+        // Clear cart
+        cart.length = 0;
+        updateCartUI();
+      } catch(err) {
+        showCheckoutError('payment-error', 'Payment capture failed: ' + err.message);
+      }
+    },
+
+    onError(err) {
+      showCheckoutError('payment-error', 'PayPal error: ' + (err.message || 'Something went wrong.'));
+    },
+
+    onCancel() {
+      showCheckoutError('payment-error', 'Payment was cancelled. You can try again.');
+    },
+  }).render('#paypal-button-container');
+}
+
+// Upload custom files via presigned S3 URLs, return array of S3 keys
+async function uploadCustomFiles() {
+  const customItems = cart.filter(i => i.type === 'custom');
+  if (customItems.length === 0) return [];
+  const keys = [];
+  for (const item of customItems) {
+    try {
+      // Get presigned URL from backend
+      const res = await fetch('/.netlify/functions/get-upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: item.name, contentType: 'image/png' }),
+      });
+      if (!res.ok) continue;
+      const { uploadUrl, key } = await res.json();
+      // Fetch the blob from the object URL
+      const blob = await fetch(item.img).then(r => r.blob());
+      await fetch(uploadUrl, { method: 'PUT', body: blob, headers: { 'Content-Type': blob.type || 'image/png' } });
+      keys.push(key);
+    } catch(e) { /* skip failed uploads, order still proceeds */ }
+  }
+  return keys;
+}
+
+</script>
+</body>
+</html>
