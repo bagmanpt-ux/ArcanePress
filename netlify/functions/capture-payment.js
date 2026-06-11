@@ -16,7 +16,7 @@ const https = require('https');
 const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 const PAYPAL_BASE =
-  process.env.PAYPAL_ENV === 'live'
+  process.env.PAYPAL_ENV === 'sandbox'
     ? 'https://api-m.paypal.com'
     : 'https://api-m.sandbox.paypal.com';
 

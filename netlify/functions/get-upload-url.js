@@ -17,7 +17,7 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
 const path = require('path');
 
-const s3 = new S3Client({ region: process.env.AW_REGION });
+const s3 = new S3Client({ region: process.env.AWS_REGION });
 
 // Allowed image MIME types
 const ALLOWED_TYPES = new Set([
