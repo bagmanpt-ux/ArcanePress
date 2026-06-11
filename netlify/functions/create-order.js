@@ -21,7 +21,7 @@ const { marshall } = require('@aws-sdk/util-dynamodb');
 const https = require('https');
 const crypto = require('crypto');
 
-const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION });
+const dynamo = new DynamoDBClient({ region: process.env.AW_REGION });
 
 // ── PayPal helpers ────────────────────────────────────────────────────────────
 const PAYPAL_BASE =
